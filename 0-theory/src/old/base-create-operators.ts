@@ -1,5 +1,4 @@
 import '../../assets/css/style.css';
-import { terminalLog } from "../../utils/log-in-terminal";
 import { defer, from, iif, of, range, timer } from "rxjs";
 import { ajax, AjaxResponse } from "rxjs/ajax";
 import { map } from "rxjs/operators";
