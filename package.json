@@ -16,7 +16,7 @@
     "test:task-4": "karma start --module=4-drag-and-drop",
     "start:task-5": "webpack-dev-server --env.module=5-live-search --env.moduleName='Живой поиск'",
     "test:task-5": "karma start --module=5-live-search",
-    "start:task-6": "webpack-dev-server --env.module=6-cache-names --env.moduleName='Кэширование запросов'" ,
+    "start:task-6": "webpack-dev-server --env.module=6-cache-names --env.moduleName='Кэширование запросов'",
     "test:task-6": "karma start --module=6-cache-names",
     "start:task-7": "webpack-dev-server --env.module=7-animations  --env.moduleName='Aнимация'",
     "test:task-8": "karma start --module=7-animations"
@@ -47,6 +47,7 @@
     "sass-loader": "^9.0.2",
     "style-loader": "^1.2.1",
     "ts-loader": "^8.0.1",
+    "ts-node": "^8.10.2",
     "typescript": "^3.9.7",
     "webpack": "^4.44.0",
     "webpack-cli": "^3.3.12",
