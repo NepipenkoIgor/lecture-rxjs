@@ -1,5 +1,5 @@
-import { fromEvent, merge, Observable, zip } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { fromEvent, iif, merge, Observable, of, zip } from "rxjs";
+import { filter, map, pluck, switchMap } from "rxjs/operators";
 
 export const touchStartEvent$ = getX(merge(
     fromEvent<MouseEvent>(document, 'mousedown'),
@@ -14,6 +14,13 @@ export const touchEndEvent$ = getX(merge(
 export function getX(source$: Observable<MouseEvent | TouchEvent>) {
     return source$
         .pipe(
+            // switchMap((event: MouseEvent | TouchEvent) => {
+            //     return iif(
+            //         () => event instanceof TouchEvent,
+            //         of(event as TouchEvent).pipe(pluck('changedTouches', 0, "clientX")),
+            //         of(event as MouseEvent).pipe(pluck('clientX')),
+            //     )
+            // })
             map((event: MouseEvent | TouchEvent) => {
                 if (event instanceof TouchEvent) {
                     return event.changedTouches[0].clientX;
