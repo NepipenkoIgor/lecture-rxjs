@@ -1,33 +1,39 @@
 import '../../assets/css/style.css';
 import { terminalLog } from "../../utils/log-in-terminal";
-import { fromEvent, interval, of } from "rxjs";
-import { concatMap, exhaustMap, map, mergeAll, mergeMap, pluck, switchAll, switchMap } from "rxjs/operators";
-import { ajax } from "rxjs/ajax";
+import { ConnectableObservable, interval, ReplaySubject, Subject, Subscription } from "rxjs";
+import { multicast, publish, refCount, share } from "rxjs/operators";
 
-// interval(1000)
-//     .pipe(map((v) => {
-//         return of(v * 2)
-//     }))
-//     .subscribe((v) => {
-//         v.subscribe((j) => {
-//             terminalLog(j);
-//         })
-//     })
-
-const inputEl = document.querySelector('input') as HTMLInputElement
-const sequence$ = fromEvent<InputEvent>(inputEl, 'input');
-
-sequence$
+// const subject = new ReplaySubject(1)
+const regularObservable = interval(1000)
     .pipe(
-        pluck('target', 'value'),
-        mergeMap((v) => {
-            return ajax(`http://learn.javascript.ru/courses/groups/api/participants?key=1c4jhut`)
-        }, 2),
-        // map + switchAll() = switchMap()
-        // map + mergeAll() = mergeMap()
-        // map + concatAll() = concatMap() === mergeMap(1)
-        // map + exhaust() = exhaustMap()
-    )
-    .subscribe((v) => {
-        terminalLog(v);
+        share()
+        // publish(), //  multicast+subject;
+        // refCount()
+        // multicast(subject)
+    ) //as ConnectableObservable<any>
+
+const sub1: Subscription = regularObservable.subscribe((v) => {
+    terminalLog(`Sub 1 => ${v}`);
+})
+
+// setTimeout(() => {
+//     connectableObservable.connect()
+// }, 2000)
+let sub2: Subscription;
+setTimeout(() => {
+    sub2 = regularObservable.subscribe((v) => {
+        terminalLog(`Sub 2 => ${v}`);
     })
+}, 5000)
+
+
+setTimeout(() => {
+    // sub1.unsubscribe();
+    sub2.unsubscribe();
+}, 7000)
+
+setTimeout(() => {
+    regularObservable.subscribe((v) => {
+        terminalLog(`Sub 3=> ${v}`);
+    });
+}, 9000)

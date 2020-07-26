@@ -1,13 +1,13 @@
-import { fromEvent, Observable } from "rxjs";
+import { EMPTY, fromEvent, Observable } from "rxjs";
 import {
-    bufferCount,
+    bufferCount, catchError,
     concatAll,
     debounceTime,
     distinctUntilChanged,
     filter, map,
     pluck,
     reduce,
-    switchMap
+    switchMap, tap
 } from "rxjs/operators";
 import { AjaxResponse } from "rxjs/ajax";
 
@@ -26,6 +26,9 @@ export function liveSearch(source$: Observable<InputEvent>, sourceFn: (text: str
             debounceTime(300),
             pluck<InputEvent, string>('target', 'value'),
             filter((text: string) => text.length > 3),
+            tap(()=>{
+                // loader show
+            }),
             distinctUntilChanged(),
             switchMap(sourceFn)
         )
@@ -42,7 +45,11 @@ export function request(source$: Observable<AjaxResponse>): Observable<string> {
             reduce((resultStr, htmlStrs) => {
                 return resultStr += createRow(htmlStrs)
             }, ''),
-            map((htmlStr) => htmlStr.trim().replace(/\s+(<)/g, '<'))
+            map((htmlStr) => htmlStr.trim().replace(/\s+(<)/g, '<')),
+            tap(()=>{
+                // loader hide
+            }),
+            catchError(() => EMPTY)
         )
 }
 
