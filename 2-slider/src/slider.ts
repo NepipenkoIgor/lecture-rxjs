@@ -29,13 +29,14 @@ export function sliderSequence(...source$: Observable<any>[]) {
     return combineLatest<number[]>(source$)
         .pipe(
             map(([quality, rating, actual]) => {
+                console.log('VALUES', quality, rating, actual)
                 return Math.round((quality + rating + actual) / 3) * 10;
             })
         )
 }
 
 
-function getValue(source$: Observable<any>, initialValue: any, sideCb: any) {
+export function getValue(source$: Observable<any>, initialValue: any, sideCb: any) {
     return source$
         .pipe(
             map(({delegateTarget: {previousElementSibling}, value: {newValue}}) => {
