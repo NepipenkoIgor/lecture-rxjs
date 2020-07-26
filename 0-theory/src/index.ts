@@ -1,39 +1,65 @@
 import '../../assets/css/style.css';
 import { terminalLog } from "../../utils/log-in-terminal";
-import { ConnectableObservable, interval, ReplaySubject, Subject, Subscription } from "rxjs";
-import { multicast, publish, refCount, share } from "rxjs/operators";
+import { asapScheduler, asyncScheduler, combineLatest, from, interval, of, queueScheduler, Subject } from "rxjs";
+import { filter, map, observeOn, take } from "rxjs/operators";
 
-// const subject = new ReplaySubject(1)
-const regularObservable = interval(1000)
-    .pipe(
-        share()
-        // publish(), //  multicast+subject;
-        // refCount()
-        // multicast(subject)
-    ) //as ConnectableObservable<any>
 
-const sub1: Subscription = regularObservable.subscribe((v) => {
-    terminalLog(`Sub 1 => ${v}`);
-})
+// terminalLog('start');
+// setTimeout(()=>terminalLog('timeout 1'));
+// setTimeout(()=>terminalLog('timeout 2'));
+// Promise.resolve().then(()=>terminalLog('promise 1'));
+// Promise.resolve().then(()=>terminalLog('promise 2'));
+// terminalLog('end');
+// --task1--task2--  --- task3
+//   start  timeout1     timeout2
+//   end
+//   promise 1
+//   promise 2
 
-// setTimeout(() => {
-//     connectableObservable.connect()
-// }, 2000)
-let sub2: Subscription;
-setTimeout(() => {
-    sub2 = regularObservable.subscribe((v) => {
-        terminalLog(`Sub 2 => ${v}`);
+// terminalLog('start');
+// from([1, 2, 3, 4, 5], asyncScheduler)
+//     .subscribe((v) => {
+//         Promise.resolve().then(() => terminalLog('promise 1'));
+//         terminalLog(`MACROTASK ${v}`)
+//     })
+//
+// terminalLog('end');
+
+// const a$ = from([1, 2], asyncScheduler);
+// const b$ = of(10);
+//
+// const c$ = combineLatest([a$, b$])
+//     .pipe(map(([a, b]: any) => a + b))
+//
+// c$.subscribe((v) => {
+//     terminalLog(v)
+// })
+
+const signal: Subject<any> = new Subject<any>();
+
+let count = 0;
+const someCalculation = (count: number) => terminalLog(`do some calculation with ${count}`);
+
+terminalLog('start');
+signal.pipe(
+    //
+    //
+    observeOn(queueScheduler),
+    take(1600))
+    .subscribe(() => {
+        someCalculation(count);
+        signal.next(count++)
     })
-}, 5000)
+signal.next(count++)
+terminalLog('start');
+// queueScheduler
+// asapScheduler
+// asyncScheduler
+// animationFrameScheduler
 
-
-setTimeout(() => {
-    // sub1.unsubscribe();
-    sub2.unsubscribe();
-}, 7000)
-
-setTimeout(() => {
-    regularObservable.subscribe((v) => {
-        terminalLog(`Sub 3=> ${v}`);
-    });
-}, 9000)
+from([1, 2, 3, 4])
+    .pipe(
+        filter((v) => v < 3),
+        observeOn(asyncScheduler),
+        map(()=>{})
+    )
