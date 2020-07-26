@@ -20,9 +20,9 @@ const sequence$ = fromEvent<InputEvent>(inputEl, 'input');
 sequence$
     .pipe(
         pluck('target', 'value'),
-        exhaustMap((v) => {
-            return ajax(`http://learn.javascript.ru/courses/groups/api/participants?key=1c4jhut?text=${v}`)
-        }),
+        mergeMap((v) => {
+            return ajax(`http://learn.javascript.ru/courses/groups/api/participants?key=1c4jhut`)
+        }, 2),
         // map + switchAll() = switchMap()
         // map + mergeAll() = mergeMap()
         // map + concatAll() = concatMap() === mergeMap(1)
