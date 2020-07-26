@@ -14,7 +14,7 @@ describe('[Slider] test functionality jasmine marbles', () => {
     beforeEach(() => {
         spyOn(window as any, 'drawCb')
     })
-    xit('getValue  should return value and start with initial value', () => {
+    it('getValue  should return value and start with initial value', () => {
         const sliderActions$ = hot('-a--b----c--|', {
             a: {delegateTarget: {previousElementSibling: fakeElement}, value: {newValue: 6}},
             b: {delegateTarget: {previousElementSibling: fakeElement}, value: {newValue: 3}},
@@ -27,7 +27,7 @@ describe('[Slider] test functionality jasmine marbles', () => {
             getValue(sliderActions$, initialValueObj, (window as any).drawCb)
         ).toBeObservable(expected$)
     })
-    xit('should call draw cb', () => {
+    it('should call draw cb', () => {
         const sliderActions$ = hot('-a--b----c--|', {
             a: {delegateTarget: {previousElementSibling: fakeElement}, value: {newValue: 6}},
             b: {delegateTarget: {previousElementSibling: fakeElement}, value: {newValue: 3}},
@@ -62,13 +62,6 @@ describe('[Slider] test functionality jasmine marbles', () => {
             a: 53,
             b: 47,
             c: 53
-        })
-        sliderSequence(
-            getValue(sliderActions1$, initialValueObj, (window as any).drawCb),
-            getValue(sliderActions2$, initialValueObj, (window as any).drawCb),
-            getValue(sliderActions3$, initialValueObj, (window as any).drawCb)
-        ).subscribe((v)=>{
-            console.log('V!!!!', v)
         })
 
         expect(

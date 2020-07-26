@@ -29,8 +29,7 @@ export function sliderSequence(...source$: Observable<any>[]) {
     return combineLatest<number[]>(source$)
         .pipe(
             map(([quality, rating, actual]) => {
-                console.log('VALUES', quality, rating, actual)
-                return Math.round((quality + rating + actual) / 3) * 10;
+                return Math.round((quality + rating + actual) / 3 * 10);
             })
         )
 }
